@@ -23,8 +23,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http.authorizeRequests().
 		     antMatchers("/webjars/**","/css/**", "/image/**", "/js/**").permitAll().
-		     antMatchers("/","home").permitAll().
-		     anyRequest().authenticated()
+		     antMatchers("/","home").permitAll()
+		     
+		     ///acesso privado para admin
+		     .antMatchers("/u/**").hasAuthority("ADMIN")
+		     
+		     ///acesso privado para medico
+		     .antMatchers("/medicos/**").hasAuthority("MEDICO")
+		     
+		     .anyRequest().authenticated()
 		     .and()
 		     	.formLogin()
 		     	.loginPage("/login")
@@ -33,7 +40,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		     	.permitAll()
 		     .and()
 		     	.logout()
-		     	.logoutSuccessUrl("/");
+		     	.logoutSuccessUrl("/")
+		     .and()
+		     	.exceptionHandling()
+		     	.accessDeniedPage("/acesso-negado");
 		
 		
 	}
