@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,17 +45,23 @@ public class UsuarioController {
 	}
 
 	// salvar usuario
+
 	@PostMapping("/cadastro/salvar")
 	public String salvarUsuario(Usuario usuario, RedirectAttributes attr) {
 		List<Perfil> perfis = usuario.getPerfis();
-		if (perfis.size() > 2 || perfis.contains(Arrays.asList(new Perfil(1L), new Perfil(3L)))
-				|| perfis.contains(Arrays.asList(new Perfil(2L), new Perfil(3L)))) {
+		if (       perfis.size() > 2 
+				|| perfis.containsAll(Arrays.asList(new Perfil(1L), new Perfil(3L)))
+				|| perfis.containsAll(Arrays.asList(new Perfil(2L), new Perfil(3L)))) {
 			attr.addFlashAttribute("falha", "Não pode esta combinação de perfis");
 			attr.addFlashAttribute("usuario", usuario);
 
 		} else {
+			try {
 			usuarioService.salvarUsuario(usuario);
 			attr.addFlashAttribute("sucesso", "Cadastrado com sucesso.");
+			}catch (DataIntegrityViolationException e) {
+				attr.addFlashAttribute("falha", "Email já existente.");
+			}
 		}
 
 		return "redirect:/u/novo/cadastro/usuario";
