@@ -1,8 +1,12 @@
 package com.mballem.curso.security.service;
 
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mballem.curso.security.datatables.Datatables;
+import com.mballem.curso.security.datatables.DatatablesColunas;
 import com.mballem.curso.security.domain.Perfil;
 import com.mballem.curso.security.domain.Usuario;
 import com.mballem.curso.security.repository.UsuarioReposirory;
@@ -20,6 +26,9 @@ public class UsuarioService implements UserDetailsService{
 	
 	@Autowired
 	private UsuarioReposirory usuarioReposirory;
+	
+	@Autowired
+	private Datatables dataTables;
 	
 	@Transactional(readOnly = true)
 	public Usuario buscarPorEmail(String email) {
@@ -45,6 +54,14 @@ public class UsuarioService implements UserDetailsService{
 			
 		}
 		return authorities;
+	}
+
+	public Map<String,Object> buscarTodos(HttpServletRequest request) {
+	    dataTables.setRequest(request);
+	    dataTables.setColunas(DatatablesColunas.USUARIOS);
+	    Page<Usuario> page =  dataTables.getSearch().isEmpty() ? usuarioReposirory.findAll(dataTables.getPageable())
+	    : usuarioReposirory.fyndByEmailOrPerfil(dataTables.getSearch(),dataTables.getPageable());
+		return dataTables.getResponse(page);
 	}
 
 }
