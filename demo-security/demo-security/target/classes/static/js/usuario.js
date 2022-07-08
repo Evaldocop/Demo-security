@@ -32,7 +32,8 @@ $(document).ready(function() {
 				{	data : 'id',	
 					render : function(id) {
 						return ''.concat('<a class="btn btn-success btn-sm btn-block"', ' ')
-								 .concat('href="').concat('/u/editar/credenciais/usuario/').concat(id, '"', ' ') 
+								 .concat('href="').concat('/u/editar/credenciais/usuario/')
+								 .concat(id, '"', ' ') 
 								 .concat('role="button" title="Editar" data-toggle="tooltip" data-placement="right">', ' ')
 								 .concat('<i class="fas fa-edit"></i></a>');
 					},

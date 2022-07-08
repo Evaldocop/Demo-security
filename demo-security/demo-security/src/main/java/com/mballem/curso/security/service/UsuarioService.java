@@ -74,4 +74,9 @@ public class UsuarioService implements UserDetailsService{
 		
 	}
 
+	public Usuario buscarPorId(Long id) {
+		// TODO Auto-generated method stub
+		return usuarioReposirory.findById(id).get();
+	}
+
 }
