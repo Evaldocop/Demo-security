@@ -8,12 +8,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.mballem.curso.security.domain.PerfilTipo;
 import com.mballem.curso.security.service.UsuarioService;
 
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
+	private static final String ADMIN = PerfilTipo.ADMIN.getDesc();
+	private static final String MEDICO = PerfilTipo.MEDICO.getDesc();
+	private static final String PACIENTE = PerfilTipo.PACIENTE.getDesc();
 	
 	@Autowired
 	private UsuarioService usuarioService;
@@ -26,10 +30,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		     antMatchers("/","home").permitAll()
 		     
 		     ///acesso privado para admin
-		     .antMatchers("/u/**").hasAuthority("ADMIN")
-		     
+		     .antMatchers("/u/**").hasAuthority(ADMIN)
+		     ///acesso privado para admin
+		     .antMatchers("/especialidades/**").hasAuthority(ADMIN)
 		     ///acesso privado para medico
-		     .antMatchers("/medicos/**").hasAuthority("MEDICO")
+		     .antMatchers("/medicos/**").hasAuthority(MEDICO)
+		     
+		     ///acesso privado para PACIENTE
+		     .antMatchers("/PACIENTES/**").hasAuthority(PACIENTE)
 		     
 		     .anyRequest().authenticated()
 		     .and()

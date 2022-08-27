@@ -10,8 +10,6 @@ import com.mballem.curso.security.domain.Perfil;
 
 
 
-
-
 @Component
 public class PerfisConverter implements Converter<String[],List<Perfil>>{
 

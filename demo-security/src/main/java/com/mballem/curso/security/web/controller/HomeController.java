@@ -31,7 +31,7 @@ public class HomeController {
 		return "login";
 	}
 
-	// abrir error
+	//acesso  negado
 	@GetMapping({"/acesso-negado"})
 	public String acessoNegado(ModelMap model, HttpServletResponse resp) {
 		model.addAttribute("status", resp.getStatus());

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mballem.curso.security.domain.Perfil;
+import com.mballem.curso.security.domain.PerfilTipo;
 import com.mballem.curso.security.domain.Usuario;
 import com.mballem.curso.security.service.UsuarioService;
 
@@ -68,11 +70,41 @@ public class UsuarioController {
 
 		return "redirect:/u/novo/cadastro/usuario";
 	}
+	
+
+	
 
 	// pre Editar Credenciais
 	@GetMapping({ "editar/credenciais/usuario/{id}" })
 	public ModelAndView preEditarCredenciais(@PathVariable("id") Long id) {
 		return new ModelAndView("usuario/cadastro", "usuario", usuarioService.buscarPorId(id));
-	}
+	};
+	
+	// pre Editar Credenciais
+	@GetMapping("/editar/dados/usuario/{id}/perfis/{perfis}")
+	public ModelAndView preEditarCadstroDadosPessoais(@PathVariable("id") Long id, 
+			                                         @PathVariable("perfis") Long[] perfisId) {
+		Usuario us= usuarioService.buscarPorIdEPerfis(id,perfisId);
+		if(us.getPerfis().contains(new Perfil(PerfilTipo.ADMIN.getCod())) &&
+			!us.getPerfis().contains(new Perfil(PerfilTipo.MEDICO.getCod())	)) {
+			
+			return new ModelAndView("usuario/cadastro","usuario",us);
+		} else if(us.getPerfis().contains(new Perfil(PerfilTipo.MEDICO.getCod())	)) {
+			
+			return new ModelAndView("especialidade/especialidade");
+			
+		}else if(us.getPerfis().contains(new Perfil(PerfilTipo.PACIENTE.getCod())	)) {
+			ModelAndView model = new ModelAndView("error");
+			model.addObject("status", 403);
+			model.addObject("error", "Área restrita!");
+			model.addObject("message", "Dados do paciente são restritos.");
+			return model;
+			
+		}
+			                                        	 
+		return new ModelAndView("redirect:/u/lista");
+	};
+
+
 
 }

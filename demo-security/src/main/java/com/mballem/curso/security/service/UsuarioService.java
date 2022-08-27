@@ -56,7 +56,8 @@ public class UsuarioService implements UserDetailsService{
 		}
 		return authorities;
 	}
-
+	
+	@Transactional(readOnly = true)
 	public Map<String,Object> buscarTodos(HttpServletRequest request) {
 	    dataTables.setRequest(request);
 	    dataTables.setColunas(DatatablesColunas.USUARIOS);
@@ -73,10 +74,15 @@ public class UsuarioService implements UserDetailsService{
 		usuarioReposirory.save(usuario);
 		
 	}
-
-	public Usuario buscarPorId(Long id) {
+@Transactional(readOnly = true)
+public Usuario buscarPorId(Long id) {
 		// TODO Auto-generated method stub
 		return usuarioReposirory.findById(id).get();
 	}
+@Transactional(readOnly = true)
+public Usuario buscarPorIdEPerfis(Long usuarioId, Long[] perfisId) {
+	
+	return usuarioReposirory.fyndByIdAndPerfis(usuarioId,perfisId).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado!"));
+}
 
 }
