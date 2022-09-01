@@ -46,7 +46,7 @@ public class MedicoController {
 				medico.setUsuario(usuario);			
 			}	
 			medicoService.salvar(medico);
-			attr.addAttribute("success", "Cadastro realizado com sucesso!");
+			attr.addFlashAttribute("sucesso", "Cadastro realizado com sucesso!");
 			attr.addAttribute("medico", medico);
 			return "redirect:/medicos/dados";
 		}	
@@ -57,7 +57,7 @@ public class MedicoController {
 		@PostMapping({"/editar"})
 		public String editar(Medico medico, RedirectAttributes attr) {
 			medicoService.editar(medico);
-			attr.addAttribute("success", "Cadastro realizado com sucesso!");
+			attr.addFlashAttribute("sucesso", "Cadastro realizado com sucesso!");
 			attr.addAttribute("medico", medico);
 			return "redirect:/medicos/dados";
 		}	

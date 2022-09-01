@@ -66,7 +66,7 @@ public class EspecialidadeController {
 	}	
 	
 	// abrir pagina
-		@GetMapping({"/titulo"})
+		@GetMapping("/titulo")
 		public ResponseEntity<?> getEspecialidadesPorTermo(@RequestParam("termo") String termo) {
 			
 			List<String> especialidades= service.buscarEspecialidadesByTermo(termo);

@@ -2,6 +2,7 @@ package com.mballem.curso.security.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -55,6 +56,11 @@ public class EspecialidadeService {
 	public List<String> buscarEspecialidadesByTermo(String termo) {
 		// TODO Auto-generated method stub
 		return especialidadeRespository.findEspecialidadeByTermo(termo);
+	}
+	@Transactional(readOnly = true)
+	public Set<Especialidade> buscarPorTitulo(String[] titulos) {
+		// TODO Auto-generated method stub
+		return especialidadeRespository.findBByTitulos(titulos);
 	}
 	
 	
