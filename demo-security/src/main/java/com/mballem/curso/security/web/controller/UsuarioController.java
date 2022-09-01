@@ -1,6 +1,5 @@
 package com.mballem.curso.security.web.controller;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,9 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.mballem.curso.security.domain.Medico;
 import com.mballem.curso.security.domain.Perfil;
 import com.mballem.curso.security.domain.PerfilTipo;
 import com.mballem.curso.security.domain.Usuario;
+import com.mballem.curso.security.service.MedicoService;
 import com.mballem.curso.security.service.UsuarioService;
 
 @Controller
@@ -30,6 +29,11 @@ public class UsuarioController {
 
 	@Autowired
 	private UsuarioService usuarioService;
+	
+	
+	@Autowired
+	private MedicoService medicoService;
+
 
 	// abrir pagina
 	@GetMapping({ "/novo/cadastro/usuario" })
@@ -82,16 +86,22 @@ public class UsuarioController {
 	
 	// pre Editar Credenciais
 	@GetMapping("/editar/dados/usuario/{id}/perfis/{perfis}")
-	public ModelAndView preEditarCadstroDadosPessoais(@PathVariable("id") Long id, 
+	public ModelAndView preEditarCadstroDadosPessoais(@PathVariable("id") Long usuarioId, 
 			                                         @PathVariable("perfis") Long[] perfisId) {
-		Usuario us= usuarioService.buscarPorIdEPerfis(id,perfisId);
+		Usuario us= usuarioService.buscarPorIdEPerfis(usuarioId,perfisId);
 		if(us.getPerfis().contains(new Perfil(PerfilTipo.ADMIN.getCod())) &&
 			!us.getPerfis().contains(new Perfil(PerfilTipo.MEDICO.getCod())	)) {
 			
 			return new ModelAndView("usuario/cadastro","usuario",us);
 		} else if(us.getPerfis().contains(new Perfil(PerfilTipo.MEDICO.getCod())	)) {
 			
-			return new ModelAndView("especialidade/especialidade");
+			
+			Medico medico= medicoService.buscarPorUsuarioId(usuarioId);
+	
+			return medico.hasNotId() ? new ModelAndView("medico/cadastro", "medico", new Medico(new Usuario(usuarioId))):
+				                       new ModelAndView("medico/cadastro", "medico", medico);
+			
+			
 			
 		}else if(us.getPerfis().contains(new Perfil(PerfilTipo.PACIENTE.getCod())	)) {
 			ModelAndView model = new ModelAndView("error");

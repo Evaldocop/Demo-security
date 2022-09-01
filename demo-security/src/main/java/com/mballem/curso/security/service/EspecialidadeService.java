@@ -50,6 +50,12 @@ public class EspecialidadeService {
 	   especialidadeRespository.deleteById(id);
 		
 	}
+
+	@Transactional(readOnly = true)
+	public List<String> buscarEspecialidadesByTermo(String termo) {
+		// TODO Auto-generated method stub
+		return especialidadeRespository.findEspecialidadeByTermo(termo);
+	}
 	
 	
 }
