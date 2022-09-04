@@ -24,7 +24,7 @@ public class EspecialidadeController {
 
 	
 	@Autowired
-	private EspecialidadeService service;
+	private EspecialidadeService especialidadeService;
 	
 	
 	// abrir pagina
@@ -35,7 +35,7 @@ public class EspecialidadeController {
 	
 	@PostMapping("/salvar")
 	public String salvar(Especialidade especialidade, RedirectAttributes attr) {
-		service.salvar(especialidade);
+		especialidadeService.salvar(especialidade);
 		attr.addFlashAttribute("sucesso", "Operação realizadacom sucesso.");
 		return "redirect:/especialidades";
 	}
@@ -45,14 +45,14 @@ public class EspecialidadeController {
 	@GetMapping({"/datatables/server"})
 	public ResponseEntity<?> getEspecialidades(HttpServletRequest request) {
 		
-		return  ResponseEntity.ok(service.buscarEspecialidades(request));
+		return  ResponseEntity.ok(especialidadeService.buscarEspecialidades(request));
 	}
 	
 	
 	// editard
 	@GetMapping("/editar/{id}")
 	public String preEditar(@PathVariable Long id,ModelMap map) {
-		map.addAttribute("especialidade",service.buscarPorId(id));
+		map.addAttribute("especialidade",especialidadeService.buscarPorId(id));
 		return "especialidade/especialidade";
 	}	
 	
@@ -60,7 +60,7 @@ public class EspecialidadeController {
 	// abrir pagina
 	@GetMapping("/excluir/{id}")
 	public String preeditar(@PathVariable Long id,RedirectAttributes  attr) {
-		service.remover(id);
+		especialidadeService.remover(id);
 		attr.addFlashAttribute("secesso","Operação realizada com sucesso");
 		return "redirect:/especialidades";
 	}	
@@ -69,9 +69,15 @@ public class EspecialidadeController {
 		@GetMapping("/titulo")
 		public ResponseEntity<?> getEspecialidadesPorTermo(@RequestParam("termo") String termo) {
 			
-			List<String> especialidades= service.buscarEspecialidadesByTermo(termo);
+			List<String> especialidades= especialidadeService.buscarEspecialidadesByTermo(termo);
 			
 			return  ResponseEntity.ok(especialidades);
+		}
+		
+		@GetMapping("/datatables/server/medico/{id}")
+		public ResponseEntity<?> getEspecialidadesPorMedico(@PathVariable("id") Long id,HttpServletRequest request) {
+						
+			return  ResponseEntity.ok(especialidadeService.buscarEspecialidadesPorMedico(id,request));
 		}
 		
 }

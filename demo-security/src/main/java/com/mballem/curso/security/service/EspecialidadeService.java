@@ -62,6 +62,13 @@ public class EspecialidadeService {
 		// TODO Auto-generated method stub
 		return especialidadeRespository.findBByTitulos(titulos);
 	}
+	@Transactional(readOnly = true)
+	public Map<String,Object> buscarEspecialidadesPorMedico(Long id,HttpServletRequest request) {
+		dataTables.setRequest(request);
+		dataTables.setColunas(DatatablesColunas.ESPECIALIDADES);
+		Page<Especialidade> page= especialidadeRespository.findByMedico(id,dataTables.getPageable());
+		return dataTables.getResponse(page);
+	}
 	
 	
 }
