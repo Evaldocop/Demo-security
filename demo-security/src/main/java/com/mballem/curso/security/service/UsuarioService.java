@@ -25,6 +25,8 @@ import com.mballem.curso.security.repository.UsuarioReposirory;
 @Service
 public class UsuarioService implements UserDetailsService{
 	
+
+
 	@Autowired
 	private UsuarioReposirory usuarioReposirory;
 	
@@ -83,6 +85,17 @@ public Usuario buscarPorId(Long id) {
 public Usuario buscarPorIdEPerfis(Long usuarioId, Long[] perfisId) {
 	
 	return usuarioReposirory.fyndByIdAndPerfis(usuarioId,perfisId).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado!"));
+}
+
+public static boolean isSenhaCorreta(String senhaDigitada, String senhaArmaxenada) {
+	return new BCryptPasswordEncoder().matches(senhaDigitada, senhaArmaxenada);
+}
+@Transactional(readOnly = false)
+public void alterarSenha(Usuario usuario, String senha) {
+	
+	usuario.setSenha(new BCryptPasswordEncoder().encode(senha));
+
+	
 }
 
 }

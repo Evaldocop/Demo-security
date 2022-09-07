@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.mballem.curso.security.domain.Paciente;
 import com.mballem.curso.security.domain.PerfilTipo;
 import com.mballem.curso.security.service.UsuarioService;
 
@@ -27,8 +28,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http.authorizeRequests().
 		     antMatchers("/webjars/**","/css/**", "/image/**", "/js/**").permitAll().
-		     antMatchers("/","home").permitAll()
 		     
+		     antMatchers("/","home").permitAll()
+		    
+		     .antMatchers("/u/editar/senha","/u/confirmar/senha").hasAuthority(MEDICO)
 		     ///acesso privado para admin
 		     .antMatchers("/u/**").hasAuthority(ADMIN)
 		     
@@ -41,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		     
 		     .antMatchers("/medicos/dados","/medicos/salvar","/medicos/editar").hasAnyAuthority(ADMIN,MEDICO)
 		     .antMatchers("/medicos/**").hasAuthority(MEDICO)
+		     
 		     
 		     ///acesso privado para PACIENTE
 		     .antMatchers("/PACIENTES/**").hasAuthority(PACIENTE)
